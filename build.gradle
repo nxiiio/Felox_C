@@ -1,0 +1,82 @@
+plugins {
+    id 'idea'
+    id 'net.minecraftforge.gradle' version '6.0.36'
+}
+
+version = mod_version
+group = mod_group_id
+base { archivesName = 'felox' }
+
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+// GameTests run with Forge, but are kept out of the distributable mod.
+sourceSets {
+    gameTest {
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath
+    }
+}
+
+minecraft {
+    mappings channel: 'official', version: minecraft_version
+    copyIdeResources = true
+
+    runs {
+        configureEach {
+            workingDirectory project.file('run')
+            property 'forge.logging.console.level', 'info'
+            mods {
+                felox { source sourceSets.main }
+            }
+        }
+        client {}
+        server {
+            workingDirectory project.file('run-server')
+            args '--nogui'
+        }
+        gameTestServer {
+            workingDirectory project.file('run-gametest')
+            property 'forge.enabledGameTestNamespaces', 'felox'
+            mods {
+                felox { source sourceSets.gameTest }
+            }
+        }
+    }
+}
+
+repositories {
+    maven {
+        name = 'GeckoLib'
+        url = 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
+        content { includeGroup 'software.bernie.geckolib' }
+    }
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+    implementation fg.deobf("software.bernie.geckolib:geckolib-forge-${minecraft_version}:${geckolib_version}")
+}
+
+tasks.named('processResources', ProcessResources).configure {
+    def properties = [mod_version: mod_version, forge_version: forge_version,
+                      geckolib_version: geckolib_version]
+    inputs.properties properties
+    filesMatching('META-INF/mods.toml') { expand properties }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}
+
+tasks.withType(AbstractArchiveTask).configureEach {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+}
+
+tasks.named('jar', Jar).configure {
+    manifest.attributes('Implementation-Title': 'Felox', 'Implementation-Version': mod_version)
+    finalizedBy 'reobfJar'
+}
+
+tasks.named('check').configure { dependsOn tasks.named('gameTestClasses') }
