@@ -1,0 +1,35 @@
+modLoader="javafml"
+loaderVersion="[47,48)"
+license="All Rights Reserved"
+issueTrackerURL="https://github.com/nxiiio/Felox_C/issues"
+
+[[mods]]
+modId="felox"
+version="${mod_version}"
+displayName="Felox"
+authors="nxiiio"
+description='''
+Prototipo de una criatura aérea tipo ave y dragón.
+Primera etapa: entidad pasiva con modelo temporal verde y animación idle.
+'''
+
+[[dependencies.felox]]
+modId="forge"
+mandatory=true
+versionRange="[${forge_version},48)"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.felox]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.20.1]"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.felox]]
+modId="geckolib"
+mandatory=true
+versionRange="[${geckolib_version},5)"
+ordering="AFTER"
+side="BOTH"
