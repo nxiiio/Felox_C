@@ -42,6 +42,8 @@ También puedes usar la configuración `runClient` generada para IntelliJ. Crea 
 /give @s felox:felox_spawn_egg
 ```
 
+Si actualizas desde la primera versión y usas una configuración de IntelliJ ya generada, recarga el proyecto Gradle y ejecuta otra vez `./gradlew genIntellijRuns` (`gradlew.bat genIntellijRuns` en Windows). Después vuelve a abrir `runClient`. Las configuraciones de desarrollo remapean el refmap SRG de GeckoLib a Mojmap mediante `build/createSrgToMcp/output.srg`; esto evita el error de `TextureManagerMixin` al buscar `m_118506_`. No hace falta añadir Mixins propios ni modificar GeckoLib.
+
 Comprueba en terreno seco y plano:
 
 - El modelo es verde y tiene cuerpo, cabeza, alas, patas y cola visibles.
@@ -62,7 +64,7 @@ Se mantiene quieto intencionalmente para revisar el modelo. Aún se aplican grav
 
 Ejecuta **tres GameTests** en un servidor dedicado: registro/atributos y guardado/carga, uso real del huevo, y pasividad tras daño del jugador. Termina al completar las pruebas y devuelve un estado de error si fallan. Un arranque sin pruebas ejecutadas no valida la etapa. Los tests y su estructura están en `src/gameTest`, fuera del JAR distribuido.
 
-`./gradlew build` compila también los GameTests, pero **no los ejecuta**. El workflow de GitHub ejecuta ambos comandos por separado.
+`./gradlew build` compila también los GameTests, pero **no los ejecuta**. La ejecución de tests queda desactivada en el workflow de GitHub: solo compila y genera el JAR con `./gradlew build -x test`.
 
 Para una sesión multijugador de desarrollo:
 
